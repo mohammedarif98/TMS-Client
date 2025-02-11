@@ -29,7 +29,6 @@ export default function UserDashBoard() {
             if (error instanceof AxiosError) {
                 if (error.response?.status === 401) {
                     Cookies.remove("jwt-token"); 
-                    toast.error("Your session has expired. Please log in again.", { duration: 3000 });
                     router.push("/login");
                 } else {
                     toast.error(error.response?.data?.message || "Logout failed", { duration: 3000 });
