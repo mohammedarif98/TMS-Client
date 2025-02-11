@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import apiClient from "@/utils/apiClient";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
+
 
 interface LoginForm {
   email: string;
@@ -28,12 +28,11 @@ export default function Login() {
       const response = await apiClient.post("/auth/login", data);
   
       if (response.data.status === "success") {
-        const { token, role } = response.data; // Assuming response includes `role`
+        const { token, role } = response.data; 
         Cookies.set("jwt-token", token, { expires: 1 });
   
         toast.success("Login successful!", { duration: 3000 });
   
-        // Redirect based on role
         if (role === "admin") {
           router.push("/dashboard/admin");
         } else {
