@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import { AxiosError } from "axios";
 
 
 export default function UserDashBoard() {
@@ -23,9 +24,13 @@ export default function UserDashBoard() {
             } else {
                 console.error("Logout failed with status:", response.status);
             }
-        } catch (error: any) {
-            console.error("Logout failed", error.message);
-        } finally {
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+              toast.error(error.response?.data?.message || "Login failed", { duration: 3000 });
+            } else {
+              toast.error("An unexpected error occurred", { duration: 3000 });
+            }
+          }finally {
             setLoading(false);
         }
     };

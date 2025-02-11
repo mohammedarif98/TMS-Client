@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import apiClient from "@/utils/apiClient";
 import toast from "react-hot-toast";
+import { AxiosError } from "axios";
 
 
 interface FormData {
@@ -38,10 +39,12 @@ export default function Register() {
         toast.success("Account created successfully!", { duration: 3000 });
         router.push("/login");
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Registration failed", {
-        duration: 3000,
-      });
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Login failed", { duration: 3000 });
+      } else {
+        toast.error("An unexpected error occurred", { duration: 3000 });
+      }
     }
   };
 
