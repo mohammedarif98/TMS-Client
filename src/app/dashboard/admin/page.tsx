@@ -6,34 +6,40 @@ import { useState } from "react";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
+
 export default function AdminDashboard() {
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
+    const handleLogout = async () => {
+        setLoading(true);
+        try {
+            const response = await apiClient.post("/api/auth/logout", {});
 
-  const handleLogout = async () => {
-      setLoading(true);
-      try {
-          const response = await apiClient.post("/api/auth/logout", {});
-
-          if (response.status === 200) {
-              Cookies.remove("jwt-token");
-              toast.success("Logout successful!", { position: "top-right" });
-              router.push("/login");
-          } else {
-              console.error("Logout failed with status:", response.status);
-          }
-      }catch (error: unknown) {
-        if (error instanceof AxiosError) {
-          toast.error(error.response?.data?.message || "Login failed", { duration: 3000 });
-        } else {
-          toast.error("An unexpected error occurred", { duration: 3000 });
+            if (response.status === 200) {
+                Cookies.remove("jwt-token"); 
+                toast.success("Logout successful!", { position: "top-right" });
+                router.push("/login");
+            } else {
+                console.error("Logout failed with status:", response.status);
+                toast.error("Logout failed. Please try again.", { duration: 3000 });
+            }
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+                if (error.response?.status === 401) {
+                    Cookies.remove("jwt-token");
+                    toast.error("Your session has expired. Please log in again.", { duration: 3000 });
+                    router.push("/login");
+                } else {
+                    toast.error(error.response?.data?.message || "Logout failed", { duration: 3000 });
+                }
+            } else {
+                toast.error("An unexpected error occurred", { duration: 3000 });
+            }
+        } finally {
+            setLoading(false);
         }
-      } finally {
-          setLoading(false);
-      }
-  };
-
+    };
 
     return (
         <div className="flex flex-col justify-center items-center h-screen">
@@ -47,6 +53,4 @@ export default function AdminDashboard() {
             </button>
         </div>
     );
-  }
-  
-
+}
