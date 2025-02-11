@@ -32,7 +32,7 @@ export default function Register() {
     }
 
     try {
-      const response = await apiClient.post("/auth/register", data);
+      const response = await apiClient.post("/api/auth/register", data);
 
       if (response.data.status === "success") {
         toast.success("Account created successfully!", { duration: 3000 });

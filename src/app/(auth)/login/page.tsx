@@ -25,7 +25,7 @@ export default function Login() {
 
   const onSubmit = async (data: LoginForm) => {
     try {
-      const response = await apiClient.post("/auth/login", data);
+      const response = await apiClient.post("/api/auth/login", data);
   
       if (response.data.status === "success") {
         const { token, role } = response.data; 

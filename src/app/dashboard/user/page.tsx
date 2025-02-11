@@ -14,7 +14,7 @@ export default function UserDashBoard() {
     const handleLogout = async () => {
         setLoading(true);
         try {
-            const response = await apiClient.post("/auth/logout", {});
+            const response = await apiClient.post("/api/auth/logout", {});
 
             if (response.status === 200) {
                 Cookies.remove("jwt-token");
