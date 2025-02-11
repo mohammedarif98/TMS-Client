@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -6,11 +6,13 @@ import { useForm } from "react-hook-form";
 import apiClient from "@/utils/apiClient";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
+import { AxiosError } from "axios";
 
 
 interface LoginForm {
   email: string;
   password: string;
+  error: string;
 }
 
 export default function Login() {
@@ -39,10 +41,12 @@ export default function Login() {
           router.push("/dashboard/user");
         }
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Login failed", {
-        duration: 3000,
-      });
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Login failed", { duration: 3000 });
+      } else {
+        toast.error("An unexpected error occurred", { duration: 3000 });
+      }
     }
   };
   
@@ -110,7 +114,7 @@ export default function Login() {
             {/* Don't have an account? */}
             <div className="flex justify-end my-2">
               <p className="text-sm text-white">
-                Don't have an account? {" "}
+                Dont have an account? {" "}
                 <Link href="/register" className="font-semibold">
                   Sign Up
                 </Link>
